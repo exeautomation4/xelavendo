@@ -1,0 +1,1248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vendo Management System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --gray: #7f8c8d;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+        }
+        
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 1.2rem;
+            text-align: center;
+            position: relative;
+        }
+        
+        .app-title {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+        
+        .app-title i {
+            font-size: 1.8rem;
+        }
+        
+        .user-controls {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 1px solid #ddd;
+            flex-wrap: wrap;
+        }
+        
+        .tab-btn {
+            padding: 15px 20px;
+            background: #f8f9fa;
+            border: none;
+            flex: 1;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-width: 150px;
+        }
+        
+        .tab-btn.active {
+            background: white;
+            color: var(--secondary);
+            border-bottom: 3px solid var(--secondary);
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 25px;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .auth-container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+        
+        .calculation-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px dashed #eee;
+        }
+        
+        .calculation-row.total {
+            font-weight: bold;
+            border-top: 2px solid var(--dark);
+            border-bottom: none;
+            margin-top: 15px;
+            padding-top: 15px;
+        }
+        
+        .signature-area {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #ddd;
+        }
+        
+        .signature-pad {
+            border: 1px dashed #ccc;
+            height: 120px;
+            margin-bottom: 15px;
+            background: #f9f9f9;
+            cursor: crosshair;
+            width: 100%;
+            border-radius: 5px;
+        }
+        
+        .btn {
+            padding: 14px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background-color: var(--secondary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+        
+        .btn-success {
+            background-color: var(--success);
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background-color: #27ae60;
+        }
+        
+        .btn-danger {
+            background-color: var(--accent);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+        
+        .btn-warning {
+            background-color: var(--warning);
+            color: white;
+        }
+        
+        .btn-warning:hover {
+            background-color: #e67e22;
+        }
+        
+        .action-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 25px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        th {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .card h3 {
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+        
+        .card .amount {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--secondary);
+        }
+        
+        .filters {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .user-badge {
+            background: var(--secondary);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-size: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .user-badge.admin {
+            background: var(--accent);
+        }
+        
+        .user-management {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 20px;
+        }
+        
+        .user-form {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+        }
+        
+        .user-list {
+            background: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+        
+        .vendo-management {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 20px;
+        }
+        
+        .vendo-form {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+        }
+        
+        .vendo-list {
+            background: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .user-controls {
+                position: static;
+                transform: none;
+                justify-content: center;
+                margin-top: 10px;
+            }
+            
+            .filters {
+                grid-template-columns: 1fr;
+            }
+            
+            .user-management, .vendo-management {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="app-title">
+                <i class="fas fa-receipt"></i>
+                <h1>Vendo Management System</h1>
+            </div>
+            <div class="user-controls">
+                <div id="userInfo" style="display: none;">
+                    <span id="userBadge" class="user-badge collector"><i class="fas fa-user"></i> Collector</span>
+                    <button class="btn btn-danger" onclick="logout()">Logout</button>
+                </div>
+            </div>
+        </header>
+        
+        <!-- Login Section -->
+        <div id="loginSection" class="tab-content active">
+            <div class="auth-container">
+                <h2 style="text-align: center; margin-bottom: 20px;">Login to Your Account</h2>
+                <div class="form-group">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" placeholder="Enter your username">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" placeholder="Enter your password">
+                </div>
+                <div class="form-group">
+                    <label for="role">Login as:</label>
+                    <select id="role">
+                        <option value="collector">Collector</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary" style="width: 100%;" onclick="login()">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </button>
+                
+                <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 5px;">
+                    <h3>Demo Accounts:</h3>
+                    <p><strong>Admin:</strong> admin / admin123</p>
+                    <p><strong>Collector:</strong> collector / collector123</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Collector Section -->
+        <div id="collectorSection" class="tab-content">
+            <h2>Create New Receipt</h2>
+            
+            <div class="form-group">
+                <label for="date">Date:</label>
+                <input type="date" id="date" value="">
+            </div>
+            
+            <div class="form-group">
+                <label for="vendoName">Select Vendo:</label>
+                <select id="vendoName" onchange="fillVendoLocation()">
+                    <option value="">Select a Vendo</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="vendoLocation">Vendo Location:</label>
+                <input type="text" id="vendoLocation" placeholder="Vendo location will auto-fill">
+            </div>
+            
+            <div class="form-group">
+                <label for="grossSales">Gross Sales (₱):</label>
+                <input type="number" id="grossSales" placeholder="Enter gross sales" oninput="calculateNetSales()">
+            </div>
+            
+            <h3>Deductions</h3>
+            
+            <div class="form-group">
+                <label for="internetPayment">Internet Payment (₱):</label>
+                <input type="number" id="internetPayment" placeholder="Enter internet payment" oninput="calculateNetSales()">
+            </div>
+            
+            <div class="form-group">
+                <label for="electricityUsage">Electricity Usage (₱):</label>
+                <input type="number" id="electricityUsage" placeholder="Enter electricity usage" oninput="calculateNetSales()">
+            </div>
+            
+            <h3>Calculations</h3>
+            
+            <div class="calculation-row">
+                <span>Gross Sales:</span>
+                <span id="grossSalesDisplay">₱0.00</span>
+            </div>
+            
+            <div class="calculation-row">
+                <span>Less: Internet Payment:</span>
+                <span id="internetDisplay">₱0.00</span>
+            </div>
+            
+            <div class="calculation-row">
+                <span>Less: Electricity Usage:</span>
+                <span id="electricityDisplay">₱0.00</span>
+            </div>
+            
+            <div class="calculation-row total">
+                <span>Net Sales:</span>
+                <span id="netSalesDisplay">₱0.00</span>
+            </div>
+            
+            <div class="calculation-row">
+                <span>Less 20% for Vendo Custodian:</span>
+                <span id="custodianShareDisplay">₱0.00</span>
+            </div>
+            
+            <div class="calculation-row total">
+                <span>Total Remaining Amount:</span>
+                <span id="remainingAmountDisplay">₱0.00</span>
+            </div>
+            
+            <div class="signature-area">
+                <label>Signature for Vendo Custodian:</label>
+                <canvas class="signature-pad" id="signaturePad"></canvas>
+                <button class="btn btn-danger" onclick="clearSignature()">Clear Signature</button>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="btn btn-success" onclick="saveReceipt()">
+                    <i class="fas fa-save"></i> Save Receipt
+                </button>
+                <button class="btn btn-primary" onclick="printReceipt()">
+                    <i class="fas fa-print"></i> Print Receipt
+                </button>
+            </div>
+        </div>
+        
+        <!-- Admin Section -->
+        <div id="adminSection" class="tab-content">
+            <div class="tabs">
+                <button class="tab-btn active" onclick="openAdminTab('dashboard')">
+                    <i class="fas fa-chart-bar"></i> Dashboard
+                </button>
+                <button class="tab-btn" onclick="openAdminTab('userManagement')">
+                    <i class="fas fa-users"></i> User Management
+                </button>
+                <button class="tab-btn" onclick="openAdminTab('vendoManagement')">
+                    <i class="fas fa-store"></i> Vendo Management
+                </button>
+            </div>
+            
+            <!-- Dashboard Tab -->
+            <div id="adminDashboard" class="tab-content active">
+                <h2>Monthly Income Database</h2>
+                
+                <div class="filters">
+                    <div class="form-group">
+                        <label for="monthFilter">Select Month:</label>
+                        <select id="monthFilter" onchange="filterData()">
+                            <option value="">All Months</option>
+                            <option value="0">January</option>
+                            <option value="1">February</option>
+                            <option value="2">March</option>
+                            <option value="3">April</option>
+                            <option value="4">May</option>
+                            <option value="5">June</option>
+                            <option value="6">July</option>
+                            <option value="7">August</option>
+                            <option value="8">September</option>
+                            <option value="9">October</option>
+                            <option value="10">November</option>
+                            <option value="11">December</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="yearFilter">Select Year:</label>
+                        <select id="yearFilter" onchange="filterData()">
+                            <option value="">All Years</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="vendoFilter">Vendo Name:</label>
+                        <select id="vendoFilter" onchange="filterData()">
+                            <option value="">All Vendos</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="summary-cards">
+                    <div class="card">
+                        <h3>Total Gross Sales</h3>
+                        <div class="amount" id="totalGross">₱0.00</div>
+                    </div>
+                    <div class="card">
+                        <h3>Total Net Sales</h3>
+                        <div class="amount" id="totalNet">₱0.00</div>
+                    </div>
+                    <div class="card">
+                        <h3>Total Custodian Share</h3>
+                        <div class="amount" id="totalCustodian">₱0.00</div>
+                    </div>
+                    <div class="card">
+                        <h3>Total Remaining</h3>
+                        <div class="amount" id="totalRemaining">₱0.00</div>
+                    </div>
+                </div>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Vendo Name</th>
+                            <th>Location</th>
+                            <th>Gross Sales</th>
+                            <th>Net Sales</th>
+                            <th>Custodian Share</th>
+                            <th>Remaining Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody id="receiptsTable">
+                        <!-- Data will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- User Management Tab -->
+            <div id="adminUserManagement" class="tab-content">
+                <h2>User Management</h2>
+                
+                <div class="user-management">
+                    <div class="user-form">
+                        <h3>Create New User</h3>
+                        <div class="form-group">
+                            <label for="newUsername">Username:</label>
+                            <input type="text" id="newUsername" placeholder="Enter username">
+                        </div>
+                        <div class="form-group">
+                            <label for="newPassword">Password:</label>
+                            <input type="password" id="newPassword" placeholder="Enter password">
+                        </div>
+                        <div class="form-group">
+                            <label for="newRole">Role:</label>
+                            <select id="newRole">
+                                <option value="collector">Collector</option>
+                                <option value="admin">Admin</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-success" onclick="createUser()">
+                            <i class="fas fa-user-plus"></i> Create User
+                        </button>
+                    </div>
+                    
+                    <div class="user-list">
+                        <h3>Existing Users</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Username</th>
+                                    <th>Role</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTable">
+                                <!-- Users will be listed here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Vendo Management Tab -->
+            <div id="adminVendoManagement" class="tab-content">
+                <h2>Vendo Management</h2>
+                
+                <div class="vendo-management">
+                    <div class="vendo-form">
+                        <h3>Create New Vendo</h3>
+                        <div class="form-group">
+                            <label for="newVendoName">Vendo Name:</label>
+                            <input type="text" id="newVendoName" placeholder="Enter vendo name">
+                        </div>
+                        <div class="form-group">
+                            <label for="newVendoLocation">Vendo Location:</label>
+                            <input type="text" id="newVendoLocation" placeholder="Enter vendo location">
+                        </div>
+                        <button class="btn btn-success" onclick="createVendo()">
+                            <i class="fas fa-plus-circle"></i> Create Vendo
+                        </button>
+                    </div>
+                    
+                    <div class="vendo-list">
+                        <h3>Existing Vendos</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Vendo Name</th>
+                                    <th>Location</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="vendosTable">
+                                <!-- Vendos will be listed here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Set default date to today
+        document.getElementById('date').valueAsDate = new Date();
+        
+        // Demo accounts
+        const accounts = {
+            admin: { password: 'admin123', role: 'admin' },
+            collector: { password: 'collector123', role: 'collector' }
+        };
+        
+        // Demo vendos
+        const vendos = [
+            { id: 1, name: "Snack Vendo 1", location: "Main Entrance" },
+            { id: 2, name: "Drink Machine A", location: "Second Floor" },
+            { id: 3, name: "Coffee Machine", location: "Lobby Area" }
+        ];
+        
+        // Current user
+        let currentUser = null;
+        
+        // Initialize signature pad
+        let isDrawing = false;
+        const signaturePad = document.getElementById('signaturePad');
+        const ctx = signaturePad.getContext('2d');
+        ctx.lineWidth = 2;
+        ctx.lineCap = 'round';
+        ctx.strokeStyle = '#000';
+        
+        // Set canvas size
+        signaturePad.width = signaturePad.offsetWidth;
+        signaturePad.height = signaturePad.offsetHeight;
+        
+        signaturePad.addEventListener('mousedown', startDrawing);
+        signaturePad.addEventListener('mousemove', draw);
+        signaturePad.addEventListener('mouseup', stopDrawing);
+        signaturePad.addEventListener('mouseout', stopDrawing);
+        
+        // Touch events for mobile devices
+        signaturePad.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const mouseEvent = new MouseEvent('mousedown', {
+                clientX: touch.clientX,
+                clientY: touch.clientY
+            });
+            signaturePad.dispatchEvent(mouseEvent);
+        });
+        
+        signaturePad.addEventListener('touchmove', function(e) {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const mouseEvent = new MouseEvent('mousemove', {
+                clientX: touch.clientX,
+                clientY: touch.clientY
+            });
+            signaturePad.dispatchEvent(mouseEvent);
+        });
+        
+        signaturePad.addEventListener('touchend', function(e) {
+            e.preventDefault();
+            const mouseEvent = new MouseEvent('mouseup');
+            signaturePad.dispatchEvent(mouseEvent);
+        });
+        
+        function startDrawing(e) {
+            isDrawing = true;
+            const rect = signaturePad.getBoundingClientRect();
+            ctx.beginPath();
+            ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+        }
+        
+        function draw(e) {
+            if (!isDrawing) return;
+            const rect = signaturePad.getBoundingClientRect();
+            ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+            ctx.stroke();
+        }
+        
+        function stopDrawing() {
+            isDrawing = false;
+        }
+        
+        function clearSignature() {
+            ctx.clearRect(0, 0, signaturePad.width, signaturePad.height);
+        }
+        
+        function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const role = document.getElementById('role').value;
+            
+            if (!username || !password) {
+                alert('Please enter both username and password.');
+                return;
+            }
+            
+            // Check if account exists and credentials are correct
+            if (accounts[username] && accounts[username].password === password && accounts[username].role === role) {
+                currentUser = { username, role };
+                
+                // Update UI
+                document.getElementById('loginSection').classList.remove('active');
+                const userInfo = document.getElementById('userInfo');
+                userInfo.style.display = 'flex';
+                userInfo.querySelector('.user-badge').textContent = username;
+                userInfo.querySelector('.user-badge').className = `user-badge ${role}`;
+                
+                // Show appropriate section based on role
+                if (role === 'admin') {
+                    document.getElementById('adminSection').classList.add('active');
+                    populateYearFilter();
+                    populateVendoFilter();
+                    filterData();
+                    loadUsers();
+                    loadVendos();
+                } else {
+                    document.getElementById('collectorSection').classList.add('active');
+                    loadVendoDropdown();
+                }
+                
+            } else {
+                alert('Invalid username, password, or role selection.');
+            }
+        }
+        
+        function logout() {
+            currentUser = null;
+            document.getElementById('userInfo').style.display = 'none';
+            document.getElementById('adminSection').classList.remove('active');
+            document.getElementById('collectorSection').classList.remove('active');
+            document.getElementById('loginSection').classList.add('active');
+            
+            // Clear form fields
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+            document.getElementById('role').value = 'collector';
+        }
+        
+        function openAdminTab(tabName) {
+            // Hide all admin tab contents
+            document.getElementById('adminDashboard').classList.remove('active');
+            document.getElementById('adminUserManagement').classList.remove('active');
+            document.getElementById('adminVendoManagement').classList.remove('active');
+            
+            // Remove active class from all admin tab buttons
+            const tabButtons = document.querySelectorAll('#adminSection .tab-btn');
+            for (let i = 0; i < tabButtons.length; i++) {
+                tabButtons[i].classList.remove('active');
+            }
+            
+            // Show the specific tab content
+            document.getElementById('admin' + tabName.charAt(0).toUpperCase() + tabName.slice(1)).classList.add('active');
+            
+            // Add active class to the button that opened the tab
+            event.currentTarget.classList.add('active');
+        }
+        
+        function calculateNetSales() {
+            const grossSales = parseFloat(document.getElementById('grossSales').value) || 0;
+            const internetPayment = parseFloat(document.getElementById('internetPayment').value) || 0;
+            const electricityUsage = parseFloat(document.getElementById('electricityUsage').value) || 0;
+            
+            // Calculate net sales
+            const netSales = grossSales - internetPayment - electricityUsage;
+            
+            // Calculate custodian share (20% of net sales)
+            const custodianShare = netSales * 0.2;
+            
+            // Calculate remaining amount
+            const remainingAmount = netSales - custodianShare;
+            
+            // Update displays
+            document.getElementById('grossSalesDisplay').textContent = `₱${grossSales.toFixed(2)}`;
+            document.getElementById('internetDisplay').textContent = `₱${internetPayment.toFixed(2)}`;
+            document.getElementById('electricityDisplay').textContent = `₱${electricityUsage.toFixed(2)}`;
+            document.getElementById('netSalesDisplay').textContent = `₱${netSales.toFixed(2)}`;
+            document.getElementById('custodianShareDisplay').textContent = `₱${custodianShare.toFixed(2)}`;
+            document.getElementById('remainingAmountDisplay').textContent = `₱${remainingAmount.toFixed(2)}`;
+        }
+        
+        function fillVendoLocation() {
+            const vendoName = document.getElementById('vendoName').value;
+            const selectedVendo = vendos.find(v => v.name === vendoName);
+            if (selectedVendo) {
+                document.getElementById('vendoLocation').value = selectedVendo.location;
+            } else {
+                document.getElementById('vendoLocation').value = '';
+            }
+        }
+        
+        function loadVendoDropdown() {
+            const vendoDropdown = document.getElementById('vendoName');
+            // Clear existing options except the first one
+            while (vendoDropdown.options.length > 1) {
+                vendoDropdown.remove(1);
+            }
+            
+            // Add options for vendo names
+            vendos.forEach(vendo => {
+                const option = document.createElement('option');
+                option.value = vendo.name;
+                option.textContent = vendo.name;
+                vendoDropdown.appendChild(option);
+            });
+        }
+        
+        function saveReceipt() {
+            // Get form values
+            const date = document.getElementById('date').value;
+            const vendoName = document.getElementById('vendoName').value;
+            const vendoLocation = document.getElementById('vendoLocation').value;
+            const grossSales = parseFloat(document.getElementById('grossSales').value) || 0;
+            const internetPayment = parseFloat(document.getElementById('internetPayment').value) || 0;
+            const electricityUsage = parseFloat(document.getElementById('electricityUsage').value) || 0;
+            
+            // Validate required fields
+            if (!date || !vendoName || !vendoLocation) {
+                alert('Please fill in all required fields: Date, Vendo Name, and Vendo Location.');
+                return;
+            }
+            
+            // Calculate values
+            const netSales = grossSales - internetPayment - electricityUsage;
+            const custodianShare = netSales * 0.2;
+            const remainingAmount = netSales - custodianShare;
+            
+            // Check if signature is provided
+            const signatureData = signaturePad.toDataURL();
+            
+            // Create receipt object
+            const receipt = {
+                id: Date.now(), // Unique ID based on timestamp
+                date,
+                vendoName,
+                vendoLocation,
+                grossSales,
+                internetPayment,
+                electricityUsage,
+                netSales,
+                custodianShare,
+                remainingAmount,
+                signature: signatureData,
+                createdBy: currentUser.username
+            };
+            
+            // Save to localStorage
+            let receipts = JSON.parse(localStorage.getItem('vendoReceipts')) || [];
+            receipts.push(receipt);
+            localStorage.setItem('vendoReceipts', JSON.stringify(receipts));
+            
+            // Clear form
+            document.getElementById('vendoName').value = '';
+            document.getElementById('vendoLocation').value = '';
+            document.getElementById('grossSales').value = '';
+            document.getElementById('internetPayment').value = '';
+            document.getElementById('electricityUsage').value = '';
+            clearSignature();
+            calculateNetSales();
+            
+            alert('Receipt saved successfully!');
+        }
+        
+        function printReceipt() {
+            // Get current values to print
+            const date = document.getElementById('date').value;
+            const vendoName = document.getElementById('vendoName').value;
+            const vendoLocation = document.getElementById('vendoLocation').value;
+            const grossSales = parseFloat(document.getElementById('grossSales').value) || 0;
+            const internetPayment = parseFloat(document.getElementById('internetPayment').value) || 0;
+            const electricityUsage = parseFloat(document.getElementById('electricityUsage').value) || 0;
+            
+            // Validate required fields
+            if (!date || !vendoName || !vendoLocation) {
+                alert('Please fill in all required fields before printing.');
+                return;
+            }
+            
+            // Calculate values
+            const netSales = grossSales - internetPayment - electricityUsage;
+            const custodianShare = netSales * 0.2;
+            const remainingAmount = netSales - custodianShare;
+            
+            // Create print content
+            const printContent = `
+                <div style="padding: 20px; font-family: Arial, sans-serif;">
+                    <h2 style="text-align: center; margin-bottom: 20px;">Vendo Receipt</h2>
+                    <p><strong>Date:</strong> ${date}</p>
+                    <p><strong>Vendo Name:</strong> ${vendoName}</p>
+                    <p><strong>Vendo Location:</strong> ${vendoLocation}</p>
+                    <hr style="margin: 15px 0;">
+                    <p><strong>Gross Sales:</strong> ₱${grossSales.toFixed(2)}</p>
+                    <p><strong>Less: Internet Payment:</strong> ₱${internetPayment.toFixed(2)}</p>
+                    <p><strong>Less: Electricity Usage:</strong> ₱${electricityUsage.toFixed(2)}</p>
+                    <hr style="margin: 15px 0;">
+                    <p><strong>Net Sales:</strong> ₱${netSales.toFixed(2)}</p>
+                    <p><strong>Less 20% for Vendo Custodian:</strong> ₱${custodianShare.toFixed(2)}</p>
+                    <hr style="margin: 15px 0;">
+                    <p><strong>Total Remaining Amount:</strong> ₱${remainingAmount.toFixed(2)}</p>
+                    <div style="margin-top: 40px;">
+                        <p>Signature for Vendo Custodian:</p>
+                        <div style="border-bottom: 1px dashed #000; height: 30px; width: 300px;"></div>
+                    </div>
+                </div>
+            `;
+            
+            // Open print window
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <html>
+                    <head>
+                        <title>Print Receipt</title>
+                        <style>
+                            body { font-family: Arial, sans-serif; }
+                            @media print {
+                                body { margin: 0; padding: 20px; }
+                            }
+                        </style>
+                    </head>
+                    <body onload="window.print(); window.close();">
+                        ${printContent}
+                    </body>
+                </html>
+            `);
+            printWindow.document.close();
+        }
+        
+        function populateYearFilter() {
+            const yearFilter = document.getElementById('yearFilter');
+            const receipts = JSON.parse(localStorage.getItem('vendoReceipts')) || [];
+            
+            // Clear existing options except the first one
+            while (yearFilter.options.length > 1) {
+                yearFilter.remove(1);
+            }
+            
+            // Get unique years from receipts
+            const years = new Set();
+            receipts.forEach(receipt => {
+                const year = new Date(receipt.date).getFullYear();
+                years.add(year);
+            });
+            
+            // Add options for years
+            years.forEach(year => {
+                const option = document.createElement('option');
+                option.value = year;
+                option.textContent = year;
+                yearFilter.appendChild(option);
+            });
+        }
+        
+        function populateVendoFilter() {
+            const vendoFilter = document.getElementById('vendoFilter');
+            const receipts = JSON.parse(localStorage.getItem('vendoReceipts')) || [];
+            
+            // Clear existing options except the first one
+            while (vendoFilter.options.length > 1) {
+                vendoFilter.remove(1);
+            }
+            
+            // Get unique vendo names from receipts
+            const vendoNames = new Set();
+            receipts.forEach(receipt => {
+                vendoNames.add(receipt.vendoName);
+            });
+            
+            // Add options for vendo names
+            vendoNames.forEach(name => {
+                const option = document.createElement('option');
+                option.value = name;
+                option.textContent = name;
+                vendoFilter.appendChild(option);
+            });
+        }
+        
+        function filterData() {
+            const monthFilter = document.getElementById('monthFilter').value;
+            const yearFilter = document.getElementById('yearFilter').value;
+            const vendoFilter = document.getElementById('vendoFilter').value;
+            const receipts = JSON.parse(localStorage.getItem('vendoReceipts')) || [];
+            
+            let filteredReceipts = receipts;
+            
+            // Apply filters
+            if (monthFilter !== '' || yearFilter !== '' || vendoFilter !== '') {
+                filteredReceipts = receipts.filter(receipt => {
+                    const date = new Date(receipt.date);
+                    const monthMatch = monthFilter === '' || date.getMonth().toString() === monthFilter;
+                    const yearMatch = yearFilter === '' || date.getFullYear().toString() === yearFilter;
+                    const vendoMatch = vendoFilter === '' || receipt.vendoName === vendoFilter;
+                    return monthMatch && yearMatch && vendoMatch;
+                });
+            }
+            
+            // Update table
+            const tableBody = document.getElementById('receiptsTable');
+            tableBody.innerHTML = '';
+            
+            let totalGross = 0;
+            let totalNet = 0;
+            let totalCustodian = 0;
+            let totalRemaining = 0;
+            
+            filteredReceipts.forEach(receipt => {
+                const row = document.createElement('tr');
+                
+                const date = new Date(receipt.date);
+                const formattedDate = `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
+                
+                row.innerHTML = `
+                    <td>${formattedDate}</td>
+                    <td>${receipt.vendoName}</td>
+                    <td>${receipt.vendoLocation}</td>
+                    <td>₱${receipt.grossSales.toFixed(2)}</td>
+                    <td>₱${receipt.netSales.toFixed(2)}</td>
+                    <td>₱${receipt.custodianShare.toFixed(2)}</td>
+                    <td>₱${receipt.remainingAmount.toFixed(2)}</td>
+                `;
+                
+                tableBody.appendChild(row);
+                
+                // Add to totals
+                totalGross += receipt.grossSales;
+                totalNet += receipt.netSales;
+                totalCustodian += receipt.custodianShare;
+                totalRemaining += receipt.remainingAmount;
+            });
+            
+            // Update summary cards
+            document.getElementById('totalGross').textContent = `₱${totalGross.toFixed(2)}`;
+            document.getElementById('totalNet').textContent = `₱${totalNet.toFixed(2)}`;
+            document.getElementById('totalCustodian').textContent = `₱${totalCustodian.toFixed(2)}`;
+            document.getElementById('totalRemaining').textContent = `₱${totalRemaining.toFixed(2)}`;
+        }
+        
+        function createUser() {
+            const username = document.getElementById('newUsername').value;
+            const password = document.getElementById('newPassword').value;
+            const role = document.getElementById('newRole').value;
+            
+            if (!username || !password) {
+                alert('Please enter both username and password.');
+                return;
+            }
+            
+            // Check if username already exists
+            if (accounts[username]) {
+                alert('Username already exists. Please choose a different username.');
+                return;
+            }
+            
+            // Add new user
+            accounts[username] = { password, role };
+            
+            // Clear form
+            document.getElementById('newUsername').value = '';
+            document.getElementById('newPassword').value = '';
+            document.getElementById('newRole').value = 'collector';
+            
+            // Refresh user list
+            loadUsers();
+            
+            alert('User created successfully!');
+        }
+        
+        function loadUsers() {
+            const usersTable = document.getElementById('usersTable');
+            usersTable.innerHTML = '';
+            
+            for (const username in accounts) {
+                if (accounts.hasOwnProperty(username)) {
+                    const role = accounts[username].role;
+                    const row = document.createElement('tr');
+                    
+                    row.innerHTML = `
+                        <td>${username}</td>
+                        <td>${role}</td>
+                        <td>
+                            <button class="btn btn-danger" onclick="deleteUser('${username}')">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </td>
+                    `;
+                    
+                    usersTable.appendChild(row);
+                }
+            }
+        }
+        
+        function deleteUser(username) {
+            if (username === 'admin' || username === 'collector') {
+                alert('Cannot delete demo accounts.');
+                return;
+            }
+            
+            if (confirm(`Are you sure you want to delete user ${username}?`)) {
+                delete accounts[username];
+                loadUsers();
+                alert('User deleted successfully!');
+            }
+        }
+        
+        function createVendo() {
+            const name = document.getElementById('newVendoName').value;
+            const location = document.getElementById('newVendoLocation').value;
+            
+            if (!name || !location) {
+                alert('Please enter both vendo name and location.');
+                return;
+            }
+            
+            // Check if vendo name already exists
+            if (vendos.find(v => v.name === name)) {
+                alert('Vendo name already exists. Please choose a different name.');
+                return;
+            }
+            
+            // Add new vendo
+            vendos.push({
+                id: Date.now(),
+                name,
+                location
+            });
+            
+            // Clear form
+            document.getElementById('newVendoName').value = '';
+            document.getElementById('newVendoLocation').value = '';
+            
+            // Refresh vendo list
+            loadVendos();
+            
+            alert('Vendo created successfully!');
+        }
+        
+        function loadVendos() {
+            const vendosTable = document.getElementById('vendosTable');
+            vendosTable.innerHTML = '';
+            
+            vendos.forEach(vendo => {
+                const row = document.createElement('tr');
+                
+                row.innerHTML = `
+                    <td>${vendo.name}</td>
+                    <td>${vendo.location}</td>
+                    <td>
+                        <button class="btn btn-danger" onclick="deleteVendo(${vendo.id})">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </td>
+                `;
+                
+                vendosTable.appendChild(row);
+            });
+            
+            // Also update the dropdown for collectors
+            if (currentUser && currentUser.role === 'collector') {
+                loadVendoDropdown();
+            }
+        }
+        
+        function deleteVendo(id) {
+            if (confirm('Are you sure you want to delete this vendo?')) {
+                const index = vendos.findIndex(v => v.id === id);
+                if (index !== -1) {
+                    vendos.splice(index, 1);
+                    loadVendos();
+                    alert('Vendo deleted successfully!');
+                }
+            }
+        }
+        
+        // Initialize the app
+        window.onload = function() {
+            // Set default date to today
+            document.getElementById('date').valueAsDate = new Date();
+            
+            // Load initial data
+            loadUsers();
+            loadVendos();
+        };
+    </script>
+</body>
+</html>
